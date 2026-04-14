@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cangcutlator saya</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
 body {
     margin: 0;
@@ -26,58 +28,7 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.display {
-    height: 60px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 10px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 10px;
-    font-size: 1.4em;
-}
-
-.buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-}
-
-button {
-    height: 60px; /* fallback biar stabil di HP */
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-button:active {
-    transform: scale(0.9);
-}
-
-/* posisi fix */
-.zero {
-    grid-column: 1 / 3;
-}
-
-.equal {
-    grid-column: 3 / 5;
-    grid-row: 5;
-    background: #00c6ff;
-}
-
-.equal:hover {
-    background: #0072ff;
-}
-
+/* DISPLAY */
 .display {
     height: 80px;
     background: rgba(0,0,0,0.4);
@@ -93,25 +44,77 @@ button:active {
 .history {
     font-size: 0.8em;
     opacity: 0.6;
-    transform: translateY(10px) scale(0.9);
-    transition: all 0.3s ease;
     text-align: right;
 }
 
 .main {
-    font-size: 1.4em;
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
     text-align: right;
-    transition: all 0.3s ease;
+    white-space: nowrap;
+    transform-origin:left center;
+    transition: transform 0.2s ease;
 }
 
-/* animasi saat hasil */
-.animate .history {
-    transform: translateY(0) scale(1);
-    opacity: 0.7;
+/* BUTTON GRID FIX TOTAL */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+
+    grid-template-areas:
+    "c div mul sub"
+    "n7 n8 n9 add"
+    "n4 n5 n6 add"
+    "n1 n2 n3 add"
+    "zero zero eq eq";
 }
 
-.animate .main {
-    transform: scale(1.1);
+button {
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    cursor: pointer;
+}
+
+/* mapping tombol */
+.c { grid-area: c; }
+.div { grid-area: div; }
+.mul { grid-area: mul; }
+.sub { grid-area: sub; }
+.add { grid-area: add; }
+
+.n7 { grid-area: n7; }
+.n8 { grid-area: n8; }
+.n9 { grid-area: n9; }
+
+.n4 { grid-area: n4; }
+.n5 { grid-area: n5; }
+.n6 { grid-area: n6; }
+
+.n1 { grid-area: n1; }
+.n2 { grid-area: n2; }
+.n3 { grid-area: n3; }
+
+.zero { grid-area: zero; }
+.equal { grid-area: eq; background:#00c6ff; }
+
+/* hover */
+button:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.processing {
+    letter-spacing: 2px;
+    animation: pulse 0.8s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(0.95); opacity: 0.6; }
+    to { transform: scale(1.05); opacity: 1; }
 }
 </style>
 </head>
@@ -120,28 +123,29 @@ button:active {
 
 <div class="calculator">
     <div class="display">
-    <div class="history" id="history"></div>
-    <div class="main" id="display">0</div>
-</div>
+        <div class="history" id="history"></div>
+        <div class="main" id="display">0</div>
+    </div>
 
     <div class="buttons">
-        <button onclick="clearDisplay()">C</button>
-        <button onclick="add('/')">÷</button>
-        <button onclick="add('*')">×</button>
-        <button onclick="add('-')">−</button>
+        <button class="c" onclick="clearDisplay()">C</button>
+        <button class="div" onclick="add('/')">÷</button>
+        <button class="mul" onclick="add('*')">×</button>
+        <button class="sub" onclick="add('-')">−</button>
 
-        <button onclick="add('7')">7</button>
-        <button onclick="add('8')">8</button>
-        <button onclick="add('9')">9</button>
-        <button onclick="add('+')">+</button>
+        <button class="n7" onclick="add('7')">7</button>
+        <button class="n8" onclick="add('8')">8</button>
+        <button class="n9" onclick="add('9')">9</button>
 
-        <button onclick="add('4')">4</button>
-        <button onclick="add('5')">5</button>
-        <button onclick="add('6')">6</button>
+        <button class="n4" onclick="add('4')">4</button>
+        <button class="n5" onclick="add('5')">5</button>
+        <button class="n6" onclick="add('6')">6</button>
 
-        <button onclick="add('1')">1</button>
-        <button onclick="add('2')">2</button>
-        <button onclick="add('3')">3</button>
+        <button class="n1" onclick="add('1')">1</button>
+        <button class="n2" onclick="add('2')">2</button>
+        <button class="n3" onclick="add('3')">3</button>
+
+        <button class="add" onclick="add('+')">+</button>
 
         <button class="zero" onclick="add('0')">0</button>
         <button class="equal" onclick="calculate()">=</button>
@@ -151,35 +155,53 @@ button:active {
 <script>
 let display = document.getElementById("display");
 let history = document.getElementById("history");
-let container = document.querySelector(".display");
 
 let input = "";
+
+/* SCALE */
+function adjustScale() {
+    let len = display.innerText.length;
+    let scale = len < 6 ? 1 : len < 10 ? 0.85 : len < 15 ? 0.7 : 0.55;
+    display.style.transform = `scale(${scale})`;
+}
 
 function add(val) {
     input += val;
     display.innerText = input;
+    adjustScale();
 }
 
 function clearDisplay() {
     input = "";
     display.innerText = "0";
     history.innerText = "";
+    adjustScale();
 }
 
 function calculate() {
     history.innerText = input;
 
-    container.classList.remove("animate");
-    void container.offsetWidth; // reset animasi
-    container.classList.add("animate");
+    let dots = 0;
 
-    display.innerText = "processing...";
+    display.classList.add("loding");
+
+    let interval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        display.innerText = "loding" + ".".repeat(dots);
+        adjustScale();
+    }, 300);
 
     setTimeout(() => {
-        display.innerText = "duka teing";
+        clearInterval(interval);
+        display.classList.remove("loding");
+
+        display.innerText = "DUKA. TANYA CHATGPT";
+        adjustScale();
         input = "";
-    }, 500);
+    }, 4000); // <-- lebih lama (2 detik)
 }
+
+adjustScale();
 </script>
 
 </body>
